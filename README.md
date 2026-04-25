@@ -8,3 +8,6 @@ Criando uma aplicação Java Console que gerencie uma tabela de Produtos em um b
 - MySQL 8
 - Maven
 - JDBC
+
+### Observações
+- O menu do console utiliza caracteres Unicode de box drawing para melhorar a visualização.

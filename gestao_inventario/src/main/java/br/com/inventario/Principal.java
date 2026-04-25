@@ -13,7 +13,7 @@ public class Principal {
     public static void main(String[] args) {
 
         System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("║   Sistema de Gestão de Inventário    ║");
+        System.out.println("║   Sistema de Gestao de Inventario    ║");
         System.out.println("╚══════════════════════════════════════╝");
 
         int opcao = -1;
@@ -26,7 +26,7 @@ public class Principal {
                 opcao = scanner.nextInt();
                 scanner.nextLine();
             } catch (InputMismatchException e) {
-                System.out.println("\n❌  Opção inválida. Digite apenas números.");
+                System.out.println("\nOpcao invalida. Digite apenas numeros.");
                 scanner.nextLine();
                 continue;
             }
@@ -36,8 +36,8 @@ public class Principal {
                 case 2 -> listarProdutos();
                 case 3 -> atualizarProduto();
                 case 4 -> excluirProduto();
-                case 5 -> System.out.println("\n👋  Encerrando o sistema. Até logo!");
-                default -> System.out.println("\n⚠️   Opção inválida. Escolha entre 1 e 5.");
+                case 5 -> System.out.println("\nEncerrando o sistema. Ate logo!");
+                default -> System.out.println("\nOpcao invalida. Escolha entre 1 e 5.");
             }
         }
 
@@ -54,7 +54,7 @@ public class Principal {
         System.out.println("│  4. Excluir Produto  (por ID)         │");
         System.out.println("│  5. Sair                              │");
         System.out.println("└──────────────────────────────────────┘");
-        System.out.print("  Escolha uma opção: ");
+        System.out.print("  Escolha uma opcao: ");
     }
 
     private static void cadastrarProduto() {
@@ -64,7 +64,7 @@ public class Principal {
         String nome = scanner.nextLine().trim();
 
         if (nome.isEmpty()) {
-            System.out.println("⚠️   O nome não pode ser vazio.");
+            System.out.println("O nome nao pode ser vazio.");
             return;
         }
 
@@ -83,13 +83,13 @@ public class Principal {
         List<Produto> produtos = dao.listarTodos();
 
         if (produtos.isEmpty()) {
-            System.out.println("⚠️   Nenhum produto cadastrado ainda.");
+            System.out.println("Nenhum produto cadastrado ainda.");
             return;
         }
 
         String linha = "+------+--------------------------------+--------------+--------------------+";
         System.out.println(linha);
-        System.out.printf("| %-4s | %-30s | %-12s | %-18s |%n", "ID", "Nome", "Preço (R$)", "Quantidade");
+        System.out.printf("| %-4s | %-30s | %-12s | %-18s |%n", "ID", "Nome", "Preco (R$)", "Quantidade");
         System.out.println(linha);
         for (Produto p : produtos) {
             System.out.println(p);
@@ -106,29 +106,29 @@ public class Principal {
 
         Produto existente = dao.buscarPorId(id);
         if (existente == null) {
-            System.out.println("⚠️   Nenhum produto encontrado com o ID: " + id);
+            System.out.println("Nenhum produto encontrado com o ID: " + id);
             return;
         }
 
         System.out.println("Produto atual: " + existente);
-        System.out.println("\nDigite os novos dados (Enter = mantém o valor atual):");
+        System.out.println("\nDigite os novos dados (Enter = mantem o valor atual):");
 
         System.out.print("Novo nome [" + existente.getNome() + "]: ");
         String novoNome = scanner.nextLine().trim();
         if (!novoNome.isEmpty()) existente.setNome(novoNome);
 
-        System.out.print("Novo preço [" + existente.getPreco() + "]: ");
+        System.out.print("Novo preco [" + existente.getPreco() + "]: ");
         String precoStr = scanner.nextLine().trim();
         if (!precoStr.isEmpty()) {
             try {
                 BigDecimal novoPreco = new BigDecimal(precoStr.replace(",", "."));
                 if (novoPreco.compareTo(BigDecimal.ZERO) < 0) {
-                    System.out.println("❌  O preço não pode ser negativo. Operação cancelada.");
+                    System.out.println("O preco nao pode ser negativo. Operacao cancelada.");
                     return;
                 }
                 existente.setPreco(novoPreco);
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido. Operação cancelada.");
+                System.out.println("Valor invalido. Operacao cancelada.");
                 return;
             }
         }
@@ -139,12 +139,12 @@ public class Principal {
             try {
                 int novaQtd = Integer.parseInt(qtdStr);
                 if (novaQtd < 0) {
-                    System.out.println("❌  A quantidade não pode ser negativa. Operação cancelada.");
+                    System.out.println("A quantidade nao pode ser negativa. Operacao cancelada.");
                     return;
                 }
                 existente.setQuantidade(novaQtd);
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido. Operação cancelada.");
+                System.out.println("Valor invalido. Operacao cancelada.");
                 return;
             }
         }
@@ -160,34 +160,34 @@ public class Principal {
 
         Produto existente = dao.buscarPorId(id);
         if (existente == null) {
-            System.out.println("⚠️   Nenhum produto encontrado com o ID: " + id);
+            System.out.println("Nenhum produto encontrado com o ID: " + id);
             return;
         }
 
         System.out.println("Produto encontrado: " + existente);
-        System.out.print("Confirma a exclusão? (S/N): ");
+        System.out.print("Confirma a exclusao? (S/N): ");
         String confirmacao = scanner.nextLine().trim().toUpperCase();
 
         if ("S".equals(confirmacao)) {
             dao.excluir(id);
         } else {
-            System.out.println("⚠️   Exclusão cancelada.");
+            System.out.println("Exclusao cancelada.");
         }
     }
 
     private static BigDecimal lerPreco() {
         while (true) {
-            System.out.print("Preço (R$): ");
+            System.out.print("Preco (R$): ");
             String entrada = scanner.nextLine().trim().replace(",", ".");
             try {
                 BigDecimal preco = new BigDecimal(entrada);
                 if (preco.compareTo(BigDecimal.ZERO) < 0) {
-                    System.out.println("❌  O preço não pode ser negativo. Tente novamente.");
+                    System.out.println("O preco nao pode ser negativo. Tente novamente.");
                     continue;
                 }
                 return preco;
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido. Use o formato: 19.90");
+                System.out.println("Valor invalido. Use o formato: 19.90");
             }
         }
     }
@@ -199,12 +199,12 @@ public class Principal {
             try {
                 int qtd = Integer.parseInt(entrada);
                 if (qtd < 0) {
-                    System.out.println("❌  A quantidade não pode ser negativa. Tente novamente.");
+                    System.out.println("A quantidade nao pode ser negativa. Tente novamente.");
                     continue;
                 }
                 return qtd;
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido. Digite um número inteiro.");
+                System.out.println("Valor invalido. Digite um numero inteiro.");
             }
         }
     }
@@ -214,12 +214,12 @@ public class Principal {
         try {
             int id = Integer.parseInt(scanner.nextLine().trim());
             if (id <= 0) {
-                System.out.println("❌  O ID deve ser um número positivo.");
+                System.out.println("O ID deve ser um numero positivo.");
                 return -1;
             }
             return id;
         } catch (NumberFormatException e) {
-            System.out.println("❌  ID inválido. Digite apenas números inteiros.");
+            System.out.println("ID invalido. Digite apenas numeros inteiros.");
             return -1;
         }
     }

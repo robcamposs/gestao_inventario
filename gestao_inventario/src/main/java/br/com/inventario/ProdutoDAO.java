@@ -24,12 +24,12 @@ public class ProdutoDAO {
                         produto.setId(generatedKeys.getInt(1));
                     }
                 }
-                System.out.println("\n✅  Produto \"" + produto.getNome() + "\" cadastrado com sucesso! (ID: " + produto.getId() + ")");
+                System.out.println("\nProduto \"" + produto.getNome() + "\" cadastrado com sucesso! (ID: " + produto.getId() + ")");
                 return true;
             }
 
         } catch (SQLException e) {
-            System.err.println("❌  Erro ao salvar produto: " + e.getMessage());
+            System.err.println("Erro ao salvar produto: " + e.getMessage());
         }
 
         return false;
@@ -53,7 +53,7 @@ public class ProdutoDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌  Erro ao listar produtos: " + e.getMessage());
+            System.err.println("Erro ao listar produtos: " + e.getMessage());
         }
 
         return produtos;
@@ -79,7 +79,7 @@ public class ProdutoDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌  Erro ao buscar produto: " + e.getMessage());
+            System.err.println("Erro ao buscar produto: " + e.getMessage());
         }
 
         return null;
@@ -99,14 +99,14 @@ public class ProdutoDAO {
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                System.out.println("\n✅  Produto (ID: " + produto.getId() + ") atualizado com sucesso!");
+                System.out.println("\nProduto (ID: " + produto.getId() + ") atualizado com sucesso!");
                 return true;
             } else {
-                System.out.println("\n⚠️   Nenhum produto encontrado com o ID: " + produto.getId());
+                System.out.println("\nNenhum produto encontrado com o ID: " + produto.getId());
             }
 
         } catch (SQLException e) {
-            System.err.println("❌  Erro ao atualizar produto: " + e.getMessage());
+            System.err.println("Erro ao atualizar produto: " + e.getMessage());
         }
 
         return false;
@@ -123,14 +123,14 @@ public class ProdutoDAO {
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                System.out.println("\n✅  Produto (ID: " + id + ") excluído com sucesso!");
+                System.out.println("\nProduto (ID: " + id + ") excluido com sucesso!");
                 return true;
             } else {
-                System.out.println("\n⚠️   Nenhum produto encontrado com o ID: " + id);
+                System.out.println("\nNenhum produto encontrado com o ID: " + id);
             }
 
         } catch (SQLException e) {
-            System.err.println("❌  Erro ao excluir produto: " + e.getMessage());
+            System.err.println("Erro ao excluir produto: " + e.getMessage());
         }
 
         return false;
