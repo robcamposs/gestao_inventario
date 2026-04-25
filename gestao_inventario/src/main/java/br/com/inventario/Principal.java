@@ -5,15 +5,10 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Classe principal da aplicação de Gestão de Inventário.
- * Exibe um menu interativo em loop até o usuário escolher sair.
- */
 public class Principal {
 
-    // Scanner compartilhado por todos os métodos de leitura
     private static final Scanner scanner = new Scanner(System.in);
-    private static final ProdutoDAO dao   = new ProdutoDAO();
+    private static final ProdutoDAO dao  = new ProdutoDAO();
 
     public static void main(String[] args) {
 
@@ -29,10 +24,10 @@ public class Principal {
 
             try {
                 opcao = scanner.nextInt();
-                scanner.nextLine(); // limpa o buffer após nextInt()
+                scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("\n❌  Opção inválida. Digite apenas números.");
-                scanner.nextLine(); // descarta a entrada inválida
+                scanner.nextLine();
                 continue;
             }
 
@@ -49,10 +44,6 @@ public class Principal {
         scanner.close();
     }
 
-    // ================================================================
-    // MENU
-    // ================================================================
-
     private static void exibirMenu() {
         System.out.println("\n┌──────────────────────────────────────┐");
         System.out.println("│              MENU PRINCIPAL           │");
@@ -60,15 +51,11 @@ public class Principal {
         System.out.println("│  1. Cadastrar Produto                 │");
         System.out.println("│  2. Listar Produtos                   │");
         System.out.println("│  3. Atualizar Produto (por ID)        │");
-        System.out.println("│  4. Excluir Produto  (por ID)        │");
+        System.out.println("│  4. Excluir Produto  (por ID)         │");
         System.out.println("│  5. Sair                              │");
         System.out.println("└──────────────────────────────────────┘");
         System.out.print("  Escolha uma opção: ");
     }
-
-    // ================================================================
-    // 1 – CADASTRAR
-    // ================================================================
 
     private static void cadastrarProduto() {
         System.out.println("\n--- Cadastrar Novo Produto ---");
@@ -82,18 +69,13 @@ public class Principal {
         }
 
         BigDecimal preco = lerPreco();
-        if (preco == null) return; // validação falhou
+        if (preco == null) return;
 
         int quantidade = lerQuantidade();
-        if (quantidade < 0) return; // validação falhou
+        if (quantidade < 0) return;
 
-        Produto produto = new Produto(nome, preco, quantidade);
-        dao.salvar(produto);
+        dao.salvar(new Produto(nome, preco, quantidade));
     }
-
-    // ================================================================
-    // 2 – LISTAR
-    // ================================================================
 
     private static void listarProdutos() {
         System.out.println("\n--- Lista de Produtos ---");
@@ -105,28 +87,16 @@ public class Principal {
             return;
         }
 
-        String cabecalho = String.format(
-            "+-%-4s-+-%-30s-+-%-12s-+-%-16s-+",
-            "----", "------------------------------",
-            "------------", "----------------"
-        );
-
-        System.out.println(cabecalho);
-        System.out.printf("| %-4s | %-30s | %-12s | %-16s |%n",
-                "ID", "Nome", "Preço (R$)", "Quantidade");
-        System.out.println(cabecalho);
-
+        String linha = "+------+--------------------------------+--------------+--------------------+";
+        System.out.println(linha);
+        System.out.printf("| %-4s | %-30s | %-12s | %-18s |%n", "ID", "Nome", "Preço (R$)", "Quantidade");
+        System.out.println(linha);
         for (Produto p : produtos) {
             System.out.println(p);
         }
-
-        System.out.println(cabecalho);
-        System.out.println("  Total de produtos: " + produtos.size());
+        System.out.println(linha);
+        System.out.println("  Total: " + produtos.size() + " produto(s)");
     }
-
-    // ================================================================
-    // 3 – ATUALIZAR
-    // ================================================================
 
     private static void atualizarProduto() {
         System.out.println("\n--- Atualizar Produto ---");
@@ -134,7 +104,6 @@ public class Principal {
         int id = lerId("atualizar");
         if (id < 0) return;
 
-        // Verifica se o produto existe antes de pedir os novos dados
         Produto existente = dao.buscarPorId(id);
         if (existente == null) {
             System.out.println("⚠️   Nenhum produto encontrado com o ID: " + id);
@@ -144,15 +113,11 @@ public class Principal {
         System.out.println("Produto atual: " + existente);
         System.out.println("\nDigite os novos dados (Enter = mantém o valor atual):");
 
-        // Nome
         System.out.print("Novo nome [" + existente.getNome() + "]: ");
         String novoNome = scanner.nextLine().trim();
-        if (!novoNome.isEmpty()) {
-            existente.setNome(novoNome);
-        }
+        if (!novoNome.isEmpty()) existente.setNome(novoNome);
 
-        // Preço
-        System.out.print("Novo preço [" + existente.getPreco() + "] (ou Enter para manter): ");
+        System.out.print("Novo preço [" + existente.getPreco() + "]: ");
         String precoStr = scanner.nextLine().trim();
         if (!precoStr.isEmpty()) {
             try {
@@ -163,13 +128,12 @@ public class Principal {
                 }
                 existente.setPreco(novoPreco);
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido para preço. Operação cancelada.");
+                System.out.println("❌  Valor inválido. Operação cancelada.");
                 return;
             }
         }
 
-        // Quantidade
-        System.out.print("Nova quantidade [" + existente.getQuantidade() + "] (ou Enter para manter): ");
+        System.out.print("Nova quantidade [" + existente.getQuantidade() + "]: ");
         String qtdStr = scanner.nextLine().trim();
         if (!qtdStr.isEmpty()) {
             try {
@@ -180,7 +144,7 @@ public class Principal {
                 }
                 existente.setQuantidade(novaQtd);
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido para quantidade. Operação cancelada.");
+                System.out.println("❌  Valor inválido. Operação cancelada.");
                 return;
             }
         }
@@ -188,17 +152,12 @@ public class Principal {
         dao.atualizar(existente);
     }
 
-    // ================================================================
-    // 4 – EXCLUIR
-    // ================================================================
-
     private static void excluirProduto() {
         System.out.println("\n--- Excluir Produto ---");
 
         int id = lerId("excluir");
         if (id < 0) return;
 
-        // Confirma com o usuário antes de excluir
         Produto existente = dao.buscarPorId(id);
         if (existente == null) {
             System.out.println("⚠️   Nenhum produto encontrado com o ID: " + id);
@@ -212,19 +171,10 @@ public class Principal {
         if ("S".equals(confirmacao)) {
             dao.excluir(id);
         } else {
-            System.out.println("⚠️   Exclusão cancelada pelo usuário.");
+            System.out.println("⚠️   Exclusão cancelada.");
         }
     }
 
-    // ================================================================
-    // HELPERS DE LEITURA VALIDADA
-    // ================================================================
-
-    /**
-     * Lê e valida um preço: deve ser um número positivo.
-     *
-     * @return {@link BigDecimal} válido, ou {@code null} em caso de erro
-     */
     private static BigDecimal lerPreco() {
         while (true) {
             System.out.print("Preço (R$): ");
@@ -237,16 +187,11 @@ public class Principal {
                 }
                 return preco;
             } catch (NumberFormatException e) {
-                System.out.println("❌  Valor inválido para preço. Use o formato: 19.90");
+                System.out.println("❌  Valor inválido. Use o formato: 19.90");
             }
         }
     }
 
-    /**
-     * Lê e valida uma quantidade: deve ser um inteiro não-negativo.
-     *
-     * @return quantidade válida, ou {@code -1} em caso de erro irrecuperável
-     */
     private static int lerQuantidade() {
         while (true) {
             System.out.print("Quantidade em estoque: ");
@@ -264,12 +209,6 @@ public class Principal {
         }
     }
 
-    /**
-     * Lê e valida um ID (inteiro positivo).
-     *
-     * @param operacao nome da operação para mensagem ao usuário (ex: "excluir")
-     * @return ID válido, ou {@code -1} em caso de erro
-     */
     private static int lerId(String operacao) {
         System.out.print("Digite o ID do produto que deseja " + operacao + ": ");
         try {

@@ -4,22 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Classe de acesso aos dados (DAO) para a entidade {@link Produto}.
- * Toda comunicação com a tabela {@code produtos} do banco passa por aqui.
- */
 public class ProdutoDAO {
 
-    // ================================================================
-    // SALVAR (INSERT)
-    // ================================================================
-
-    /**
-     * Persiste um novo produto na tabela {@code produtos}.
-     *
-     * @param produto objeto a ser salvo (id será ignorado — gerado pelo banco)
-     * @return {@code true} se ao menos uma linha foi inserida, {@code false} caso contrário
-     */
     public boolean salvar(Produto produto) {
         String sql = "INSERT INTO produtos (nome, preco, quantidade) VALUES (?, ?, ?)";
 
@@ -33,14 +19,12 @@ public class ProdutoDAO {
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                // Recupera o ID gerado pelo banco e atualiza o objeto
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         produto.setId(generatedKeys.getInt(1));
                     }
                 }
-                System.out.println("\n✅  Produto \"" + produto.getNome()
-                        + "\" cadastrado com sucesso! (ID: " + produto.getId() + ")");
+                System.out.println("\n✅  Produto \"" + produto.getNome() + "\" cadastrado com sucesso! (ID: " + produto.getId() + ")");
                 return true;
             }
 
@@ -51,15 +35,6 @@ public class ProdutoDAO {
         return false;
     }
 
-    // ================================================================
-    // LISTAR TODOS (SELECT)
-    // ================================================================
-
-    /**
-     * Recupera todos os produtos cadastrados.
-     *
-     * @return lista de {@link Produto}; vazia se não houver registros
-     */
     public List<Produto> listarTodos() {
         String sql = "SELECT id, nome, preco, quantidade FROM produtos ORDER BY id";
         List<Produto> produtos = new ArrayList<>();
@@ -69,13 +44,12 @@ public class ProdutoDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Produto p = new Produto(
+                produtos.add(new Produto(
                         rs.getInt("id"),
                         rs.getString("nome"),
                         rs.getBigDecimal("preco"),
                         rs.getInt("quantidade")
-                );
-                produtos.add(p);
+                ));
             }
 
         } catch (SQLException e) {
@@ -85,16 +59,6 @@ public class ProdutoDAO {
         return produtos;
     }
 
-    // ================================================================
-    // BUSCAR POR ID (SELECT)
-    // ================================================================
-
-    /**
-     * Busca um único produto pelo seu ID.
-     *
-     * @param id identificador do produto
-     * @return o {@link Produto} encontrado, ou {@code null} se não existir
-     */
     public Produto buscarPorId(int id) {
         String sql = "SELECT id, nome, preco, quantidade FROM produtos WHERE id = ?";
 
@@ -121,16 +85,6 @@ public class ProdutoDAO {
         return null;
     }
 
-    // ================================================================
-    // ATUALIZAR (UPDATE)
-    // ================================================================
-
-    /**
-     * Atualiza os dados de um produto existente com base no seu ID.
-     *
-     * @param produto objeto com os novos valores (deve ter um id válido)
-     * @return {@code true} se o produto foi encontrado e atualizado
-     */
     public boolean atualizar(Produto produto) {
         String sql = "UPDATE produtos SET nome = ?, preco = ?, quantidade = ? WHERE id = ?";
 
@@ -158,16 +112,6 @@ public class ProdutoDAO {
         return false;
     }
 
-    // ================================================================
-    // EXCLUIR (DELETE)
-    // ================================================================
-
-    /**
-     * Remove um produto da tabela pelo seu ID.
-     *
-     * @param id identificador do produto a ser excluído
-     * @return {@code true} se o produto foi encontrado e removido
-     */
     public boolean excluir(int id) {
         String sql = "DELETE FROM produtos WHERE id = ?";
 
